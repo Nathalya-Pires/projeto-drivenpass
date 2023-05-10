@@ -35,13 +35,33 @@ async function allCredentials(userId: number) {
     return list;
 }
 
+async function listById(userId: number, id: number) {
+  const credentialId = await credentialRepository.credentialById(id);
+  if (!credentialId || credentialId.userId !== userId) {
+    throw notFoundError();
+  }
+
+  credentialId.password = cryptrUtil.decrypt(credentialId.password);
+  return credentialId;
+}
+
+async function DeleteById(userId: number, id: number) {
+  const credentialId = await credentialRepository.credentialById(id);
+  if (!credentialId || credentialId.userId !== userId) {
+    throw notFoundError();
+  }
+
+  await credentialRepository.deleteCredential(id);
+  return
+}
+
 export type CreateCredentialParams = Pick<Credential, 'userId' | 'title' | 'url' | 'username' | 'password'>;
-
-
 
 const credentialService = {
     CreateNewCredential,
     allCredentials,
+    listById,
+    DeleteById
 }
 
 export default credentialService;

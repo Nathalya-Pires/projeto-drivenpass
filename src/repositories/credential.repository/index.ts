@@ -24,10 +24,29 @@ async function listAllCredentials(userId: number) {
     });
 }
 
+async function credentialById(id: number) {
+    return prisma.credential.findUnique ({
+        where: {
+        id,
+        },
+    });
+}
+
+async function deleteCredential(id: number) {
+    return prisma.credential.delete({
+      where: {
+        id
+      },
+    });
+}
+
+
 const credentialRepository = {
     newCredential,
     findByTitle,
-    listAllCredentials
+    listAllCredentials,
+    credentialById,
+    deleteCredential
 }
 
 export default credentialRepository;
