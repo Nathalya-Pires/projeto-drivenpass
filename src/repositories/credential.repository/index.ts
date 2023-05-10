@@ -7,8 +7,6 @@ async function newCredential(data: Prisma.CredentialUncheckedCreateInput) {
     });
 };
 
-
-
 async function findByTitle(userId: number, title: string) {
     return prisma.credential.findFirst({
         where: {
@@ -18,10 +16,18 @@ async function findByTitle(userId: number, title: string) {
     });
 }
 
+async function listAllCredentials(userId: number) {
+    return prisma.credential.findMany({
+        where: {
+            userId,
+        }
+    });
+}
 
 const credentialRepository = {
     newCredential,
     findByTitle,
+    listAllCredentials
 }
 
 export default credentialRepository;
