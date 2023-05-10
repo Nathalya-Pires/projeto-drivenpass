@@ -1,35 +1,35 @@
 import httpStatus from 'http-status';
-import { Response } from 'express';
+import {  NextFunction, Response } from 'express';
 import networkService, { CreateNetworkParams } from "../services/network.service/index.js";
 import { AuthenticatedRequest } from "../middlewares/authentication.middleware.js";
 
 
-export async function networkPost(req: AuthenticatedRequest, res: Response) {
+export async function networkPost(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     const { title, network, password } = req.body as CreateNetworkParams;
     const { userId } = req;
   
     try {
       await networkService.CreateNewNetwork({ userId, title, network, password });
       return res.sendStatus(httpStatus.CREATED);
-    } catch (error) {
-        return res.status(httpStatus.CONFLICT).send(error);
+    } catch (err) {
+        next(err);
       }
       
 }
 
-export async function getNetworks(req: AuthenticatedRequest, res: Response) {
+export async function getNetworks(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const {userId} = req;
 
   try {
     const list = await networkService.allNetworks(userId);
     return res.status(httpStatus.OK).send(list);
-  } catch (error) {
-    return res.status(httpStatus.NOT_FOUND).send(error);
+  } catch (err) {
+    next(err);
   }
 
 }
 
-export async function getNetworksById(req: AuthenticatedRequest, res: Response) {
+export async function getNetworksById(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const { id } = req.params;
   const { userId } = req;
 
@@ -37,19 +37,19 @@ export async function getNetworksById(req: AuthenticatedRequest, res: Response) 
     const listId = await networkService.listById(userId, parseInt(id));
     return res.status(httpStatus.OK).send(listId);
 
-  } catch (error) {
-    return res.status(httpStatus.NOT_FOUND).send(error);
+  } catch (err) {
+    next(err);
   }
 }
 
-export async function deleteNetwork(req: AuthenticatedRequest, res: Response) {
+export async function deleteNetwork(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const { userId } = req;
   const { id } = req.params;
 
   try {
     await networkService.DeleteById(userId, parseInt(id));
     return res.sendStatus(httpStatus.ACCEPTED);
-  } catch (error) {
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
+  } catch (err) {
+    next(err);
   }
 }

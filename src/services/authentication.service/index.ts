@@ -22,7 +22,7 @@ async function signIn(params:SignInParams): Promise<SignInResult>{
 
 async function getUser(email: string) {
     const user = await userRepository.findByEmail(email);
-    console.log(user);
+
     if (!user) throw invalidCredentialsError();
     
     return user;
@@ -36,7 +36,7 @@ async function createSession(userId: number) {
   
 async function validatePassword(password: string, userPassword: string) {
     const isPasswordValid = await bcrypt.compare(password, userPassword);
-    console.log(isPasswordValid)
+
     if (!isPasswordValid) throw invalidCredentialsError();
 }
 
